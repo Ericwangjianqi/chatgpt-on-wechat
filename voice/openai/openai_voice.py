@@ -21,7 +21,8 @@ class OpenaiVoice(Voice):
         logger.debug("[Openai] voice file name={}".format(voice_file))
         try:
             file = open(voice_file, "rb")
-            result = openai.Audio.transcribe("whisper-1", file)
+            deployment_id = "whisper"
+            result = openai.Audio.transcribe("whisper", file, deployment_id=deployment_id)
             text = result["text"]
             reply = Reply(ReplyType.TEXT, text)
             logger.info("[Openai] voiceToText text={} voice file name={}".format(text, voice_file))
