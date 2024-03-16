@@ -6,7 +6,7 @@ from openai import AzureOpenAI
 
 client = AzureOpenAI(
   azure_endpoint = "https://avatar-sec.openai.azure.com/", 
-  api_key="c02616c427ac479890478c4af91e4257",  
+  api_key="",  
   api_version="2024-02-15-preview"
 )
 
