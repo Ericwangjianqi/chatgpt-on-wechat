@@ -80,10 +80,10 @@ available_setting = {
     # 语音设置
     "speech_recognition": True,  # 是否开启语音识别
     "group_speech_recognition": False,  # 是否开启群组语音识别
-    "voice_reply_voice": False,  # 是否使用语音回复语音，需要设置对应语音合成引擎的api key
+    "voice_reply_voice": True,  # 是否使用语音回复语音，需要设置对应语音合成引擎的api key
     "always_reply_voice": False,  # 是否一直使用语音回复
-    "voice_to_text": "openai",  # 语音识别引擎，支持openai,baidu,google,azure
-    "text_to_voice": "openai",  # 语音合成引擎，支持openai,baidu,google,pytts(offline),azure,elevenlabs
+    "voice_to_text": "azure",  # 语音识别引擎，支持openai,baidu,google,azure
+    "text_to_voice": "azure",  # 语音合成引擎，支持openai,baidu,google,pytts(offline),azure,elevenlabs
     "text_to_voice_model": "tts-1",
     "tts_voice_id": "alloy",
     # baidu 语音api配置， 使用百度语音识别和语音合成时需要
@@ -231,10 +231,14 @@ def load_config():
     # 将json字符串反序列化为dict类型
     config = Config(json.loads(config_str))
     import base64
-    base64APIkey = "YzAyNjE2YzQyN2FjNDc5ODkwNDc4YzRhZjkxZTQyNTc="
+    base64APIkey = config["open_ai_api_key"]
     key = base64.b64decode(base64APIkey.encode("utf-8")).decode("utf-8")
     config["open_ai_api_key"] = key
 
+    azure_voice_api_key = config["azure_voice_api_key"]
+    key = base64.b64decode(azure_voice_api_key.encode("utf-8")).decode("utf-8")
+    config["azure_voice_api_key"] = key
+ 
     # override config with environment variables.
     # Some online deployment platforms (e.g. Railway) deploy project from github directly. So you shouldn't put your secrets like api key in a config file, instead use environment variables to override the default config.
     for name, value in os.environ.items():
