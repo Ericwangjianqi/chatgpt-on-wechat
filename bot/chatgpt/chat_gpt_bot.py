@@ -1,5 +1,5 @@
 # encoding:utf-8
-
+import os
 import time
 
 import openai
@@ -74,7 +74,25 @@ class ChatGPTBot(Bot, OpenAIImage):
             # if context.get('stream'):
             #     # reply in stream
             #     return self.reply_text_stream(query, new_query, session_id)
+            introduction_list = []
+            link_list = []
+            fn = os.path.join(os.path.dirname(__file__), "faq.txt")
+            with open(fn, "r", encoding="utf-8") as f:
+                lines = f.readlines()
 
+                for i, line in enumerate(lines):
+                    introduction_list.append(line.strip().split("\t")[0])
+                    link_list.append(line.strip().split("\t")[1])
+            length = len(introduction_list)
+            question = query
+            faq = " ".join(introduction_list)
+            # query = '请问 “' + question + '” 与下面1和2哪个结果更匹配,如果都不匹配则请你给出一个答案。 1. 线上打车的流程与方法 2. 线上挂号的流程与方法'
+            # query = "请问“如何线上订餐”与下面5个选项中的哪一个更匹配， 1. 线上打车的教程。 2.线上挂号指南。3. 如何进行人脸验证。 4. 社保资格年度认证教程。5. 完全不相关。"
+            query = f'请问 "{question}" 与下面{length}个选项中的哪一个特别匹配, {faq}'
+            if len(session.messages) > 2:
+                session.messages = session.messages[:2]
+            session.messages[1]["content"] = query
+            # session.messages[0]["content"] = "你是一个智能助手，你可以帮助人们发现信息，回答问题。"
             reply_content = self.reply_text(session, api_key, args=new_args)
             logger.debug(
                 "[CHATGPT] new_query={}, session_id={}, reply_cont={}, completion_tokens={}".format(
